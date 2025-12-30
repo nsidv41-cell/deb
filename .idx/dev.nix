@@ -1,35 +1,19 @@
 { pkgs, ... }: {
-  # 1. Use a standard channel (errors often happen if this is wrong)
   channel = "stable-24.11"; 
-
-  # 2. Package list (ensure no trailing commas inside brackets)
   packages = [
-    pkgs.docker
-    pkgs.git
-    pkgs.qemu_kvm
+    pkgs.android-tools
+    pkgs.unzip
   ];
 
-  # 3. Docker Service (This must be OUTSIDE the 'idx' block)
-  services.docker.enable = true;
-
-  # 4. The 'idx' block for previews and extensions
-  idx = {
-    extensions = [
-      "ms-azuretools.vscode-docker"
-    ];
-
+  # Enable Android Preview service
+  idx.previews = {
+    enable = true;
     previews = {
-      enable = true;
-      previews = {
-        # The key should be a name like 'kde-desktop'
-        kde-desktop = {
-          # Use $PORT variable; IDX handles the routing automatically
-          command = [
-            "docker" "run" "--rm" "--privileged" "--device=/dev/kvm" 
-            "-p" "$PORT:6901" "debian13-kde-kasm"
-          ];
-          manager = "web";
-        };
+      # This 'android' preview creates a high-performance web stream of the emulator
+      android-machine = {
+        manager = "android";
+        # We use a tablet-style resolution to make it feel more like a 'Desktop OS'
+        # You can access this via the Preview tab or the Port URL
       };
     };
   };
